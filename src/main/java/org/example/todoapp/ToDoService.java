@@ -18,9 +18,21 @@ public class ToDoService {
         return toDoRepo.findById(id).orElseThrow();
     }
 
-    public ToDo createToDo(ToDoDTO toDoDTO){
-        // String id = ...
+    public ToDo createToDo(ToDoDTO toDoDTO) {
+        ToDo newToDo = new ToDo(IdService.generateId(), toDoDTO.description(),
+                toDoDTO.status());
+        toDoRepo.save(newToDo);
+        return newToDo;
+    }
 
-        return toDoRepo.save()
+    public ToDo editToDo(ToDo editedToDo) {
+        toDoRepo.deleteById(editedToDo.id());
+        toDoRepo.save(editedToDo);
+        return editedToDo;
+    }
+
+    public String deleteToDo(String id){
+        toDoRepo.deleteById(id);
+        return "ToDo successfully deleted.";
     }
 }

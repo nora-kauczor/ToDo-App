@@ -1,9 +1,7 @@
 package org.example.todoapp;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -11,16 +9,31 @@ import java.util.List;
 @RestController
 @RequestMapping("api/todo")
 public class ToDoController {
-   private final ToDoService toDoService;
+    private final ToDoService toDoService;
 
 
     @GetMapping
-    public List<ToDo> getAllToDos(){
+    public List<ToDo> getAllToDos() {
         return toDoService.getAllToDos();
     }
 
     @GetMapping("/{id}")
-    public ToDo getToDo(@RequestParam String id){
+    public ToDo getToDo(@RequestParam String id) {
         return toDoService.getToDo(id);
+    }
+
+    @PutMapping
+    public ToDo createToDo(@RequestBody ToDoDTO toDoDTO) {
+        return toDoService.createToDo(toDoDTO);
+    }
+
+    @PostMapping
+    public ToDo editToDo(@RequestParam ToDo editedToDo){
+        return toDoService.editToDo(editedToDo);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteToDo(@RequestParam String id){
+        return toDoService.deleteToDo(id);
     }
 }
