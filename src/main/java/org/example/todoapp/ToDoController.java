@@ -11,7 +11,10 @@ import java.util.List;
 public class ToDoController {
     private final ToDoService toDoService;
 
-
+    @GetMapping("/correct")
+    public ToDo correctDescription(@RequestBody ToDo toDo){
+        return toDoService.correctDescription(toDo);
+    }
     @GetMapping
     public List<ToDo> getAllToDos() {
         return toDoService.getAllToDos();
@@ -36,4 +39,6 @@ public class ToDoController {
     public String deleteToDo(@PathVariable String id){
         return toDoService.deleteToDo(id);
     }
+
+
 }
