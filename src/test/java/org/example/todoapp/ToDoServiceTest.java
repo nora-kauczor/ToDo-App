@@ -18,7 +18,7 @@ class ToDoServiceTest {
 
     @Test
     void getAllToDos() {
-        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.DOING.getValue());
         mockedRepo.save(testToDo);
         List<ToDo> expected = List.of(testToDo);
         when(mockedRepo.findAll()).thenReturn(expected);
@@ -30,7 +30,7 @@ class ToDoServiceTest {
 
     @Test
     void getToDo() {
-        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.DOING.getValue());
         mockedRepo.save(testToDo);
         ToDo expected = testToDo;
         when(mockedRepo.findById(testToDo.id())).thenReturn(Optional.of(expected));
@@ -41,8 +41,8 @@ class ToDoServiceTest {
 
     @Test
     void createToDo() {
-        ToDoDTO testToDoDTO = new ToDoDTO("buy birthday present", Status.IN_PROGRESS.getValue());
-        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        ToDoDTO testToDoDTO = new ToDoDTO("buy birthday present", Status.DOING.getValue());
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.DOING.getValue());
         mockedRepo.save(testToDo);
         ToDo expected = testToDo;
         when(mockedRepo.save(any(ToDo.class))).thenReturn(expected);
@@ -54,7 +54,7 @@ class ToDoServiceTest {
 
     @Test
     void editToDo() {
-        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.DOING.getValue());
         mockedRepo.save(testToDo);
         ToDo expected = testToDo;
         when(mockedRepo.save(any(ToDo.class))).thenReturn(expected);
@@ -65,7 +65,7 @@ class ToDoServiceTest {
 
     @Test
     void deleteToDo() {
-        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.DOING.getValue());
         mockedRepo.save(testToDo);
         String expected = "ToDo successfully deleted.";
         String actual = testService.deleteToDo(testToDo.id());

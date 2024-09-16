@@ -36,7 +36,7 @@ class ToDoControllerTest {
     @Test
     @DirtiesContext
     void getAllToDos() throws Exception {
-        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.DOING.getValue());
         testRepo.save(testToDo);
         mockMvc.perform(get("/api/todo"))
                 .andExpect(status().isOk())
@@ -51,7 +51,7 @@ class ToDoControllerTest {
     @Test
     @DirtiesContext
     void getToDo() throws Exception {
-        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.DOING.getValue());
         testRepo.save(testToDo);
         mockMvc.perform(get("/api/todo/39abc"))
                 .andExpect(status().isOk())
@@ -84,7 +84,7 @@ class ToDoControllerTest {
     @Test
     @DirtiesContext
     void editToDo() throws Exception {
-        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.DOING.getValue());
         testRepo.save(testToDo);
         mockMvc.perform(put("/api/todo/39abc")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +102,7 @@ class ToDoControllerTest {
     @Test
     @DirtiesContext
     void deleteToDo() throws Exception {
-        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.DOING.getValue());
         testRepo.save(testToDo);
         mockMvc.perform(delete("/api/todo/39abc"))
                 .andExpect(status().isOk())

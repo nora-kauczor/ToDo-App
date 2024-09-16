@@ -23,8 +23,8 @@ public class ToDoService {
                 .baseUrl(baseUrl).build();
     }
 
-    public ToDo correctDescription(ToDo ToDo) {
-        String question = "Correct spelling and grammar mistakes: "+ToDo.description();
+    public String correctDescription(String description) {
+        String question = "Correct spelling and grammar mistakes: "+description;
         OpenAiRequest request = new OpenAiRequest("gpt-4o-mini",
                 List.of(new OpenAiMessage("user", question )),
                 0.2);
@@ -34,8 +34,7 @@ public class ToDoService {
                 .retrieve()
                 .body(OpenAiResponse.class);
         assert response != null;
-        String correctedDescription = response.getAnswer();
-        return new ToDo(ToDo.id(), correctedDescription, ToDo.status());
+        return response.getAnswer();
     }
 
     public List<ToDo> getAllToDos() {
@@ -47,13 +46,16 @@ public class ToDoService {
     }
 
     public ToDo createToDo(ToDoDTO toDoDTO) {
-        ToDo newToDo = new ToDo(IdService.generateId(), toDoDTO.description(),
+        String correctedDescription = correctDescription(toDoDTO.description());
+        ToDo newToDo = new ToDo(IdService.generateId(), correctedDescription,
                 toDoDTO.status());
         return toDoRepo.save(newToDo);
     }
 
     public ToDo editToDo(ToDo editedToDo) {
-        return toDoRepo.save(editedToDo);
+        String correctedDescription = correctDescription(editedToDo.description());
+        ToDo toDoWithCorrectedDescription = new ToDo(editedToDo.id(), correctedDescription, editedToDo.status());
+        return toDoRepo.save(toDoWithCorrectedDescription);
     }
 
     public String deleteToDo(String id) {
