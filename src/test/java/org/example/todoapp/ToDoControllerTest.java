@@ -8,6 +8,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,9 +42,72 @@ class ToDoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(
                         """
-                            [    {"id":"39abc", "description":"buy birthday present", "status":"in progress"}]
-"""
+                                                            [    {"id":"39abc", "description":"buy birthday present", "status":"in progress"}]
+                                """
                 ));
+    }
+
+
+    @Test
+    @DirtiesContext
+    void getToDo() throws Exception {
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        testRepo.save(testToDo);
+        mockMvc.perform(get("/api/todo/39abc"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(
+                        """
+                                                               {"id":"39abc", "description":"buy birthday present", "status":"in progress"}
+                                """
+                ));
+    }
+
+
+    @Test
+    @DirtiesContext
+    void createToDo() throws Exception {
+
+        mockMvc.perform(post("/api/todo")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                { "description":"buy birthday present", "status":"in progress"}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                                                       { "description":"buy birthday present", "status":"in progress"}
+                        """)
+                ).andExpect(jsonPath("$.id").isNotEmpty());
+        ;
+    }
+
+
+    @Test
+    @DirtiesContext
+    void editToDo() throws Exception {
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        testRepo.save(testToDo);
+        mockMvc.perform(put("/api/todo/39abc")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                { "id":"39abc", "description":"buy birthday presents and champaign", "status":"in progress"}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(content().json(
+                        """
+                                                               {"id":"39abc", "description":"buy birthday presents and champaign", "status":"in progress"}
+                                """
+                ));
+    }
+
+    @Test
+    @DirtiesContext
+    void deleteToDo() throws Exception {
+        ToDo testToDo = new ToDo("39abc", "buy birthday present", Status.IN_PROGRESS.getValue());
+        testRepo.save(testToDo);
+        mockMvc.perform(delete("/api/todo/39abc"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("ToDo successfully deleted.")
+                );
     }
 
 

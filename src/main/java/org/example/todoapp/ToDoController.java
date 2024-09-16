@@ -18,22 +18,22 @@ public class ToDoController {
     }
 
     @GetMapping("/{id}")
-    public ToDo getToDo(@RequestParam String id) {
+    public ToDo getToDo(@PathVariable String id) {
         return toDoService.getToDo(id);
     }
 
-    @PutMapping
+    @PostMapping
     public ToDo createToDo(@RequestBody ToDoDTO toDoDTO) {
         return toDoService.createToDo(toDoDTO);
     }
 
-    @PostMapping
-    public ToDo editToDo(@RequestParam ToDo editedToDo){
+    @PutMapping("/{id}")
+    public ToDo editToDo(@RequestBody ToDo editedToDo){
         return toDoService.editToDo(editedToDo);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteToDo(@RequestParam String id){
+    public String deleteToDo(@PathVariable String id){
         return toDoService.deleteToDo(id);
     }
 }
