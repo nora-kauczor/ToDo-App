@@ -23,14 +23,11 @@ public class ToDoService {
     public ToDo createToDo(ToDoDTO toDoDTO) {
         ToDo newToDo = new ToDo(IdService.generateId(), toDoDTO.description(),
                 toDoDTO.status());
-        toDoRepo.save(newToDo);
-        return newToDo;
+        return toDoRepo.save(newToDo);
     }
 
     public ToDo editToDo(ToDo editedToDo) {
-        toDoRepo.deleteById(editedToDo.id());
-        toDoRepo.save(editedToDo);
-        return editedToDo;
+        return toDoRepo.save(editedToDo);
     }
 
     public String deleteToDo(String id){
