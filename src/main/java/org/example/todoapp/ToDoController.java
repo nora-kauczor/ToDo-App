@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/todo")
 public class ToDoController {
-    ToDoService toDoService;
+   private final ToDoService toDoService;
 
 
     @GetMapping
@@ -19,8 +19,8 @@ public class ToDoController {
         return toDoService.getAllToDos();
     }
 
-    @GetMapping
-    public List<ToDo> getToDo(@RequestParam String id){
+    @GetMapping("/{id}")
+    public ToDo getToDo(@RequestParam String id){
         return toDoService.getToDo(id);
     }
 }
