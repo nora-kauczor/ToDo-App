@@ -2,6 +2,7 @@ package org.example.todoapp;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @Service
 public class ToDoService {
     private final ToDoRepo toDoRepo;
+
 
     public List<ToDo> getAllToDos() {
         return toDoRepo.findAll();
