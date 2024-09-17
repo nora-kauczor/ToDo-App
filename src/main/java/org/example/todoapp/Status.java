@@ -2,7 +2,8 @@ package org.example.todoapp;
 
 public enum Status {
     OPEN("open"),
-    DOING("doing"),
+    IN_PROGRESS("doing"),
+
     DONE("done");
 
     private final String value;

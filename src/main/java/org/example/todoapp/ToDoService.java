@@ -16,17 +16,18 @@ public class ToDoService {
 
 
     public ToDoService(ToDoRepo toDoRepo, @Value("${BASE_URL}") String baseUrl,
-                       @Value("${AUTH_KEY") String key) {
+                       @Value("${AUTH_KEY") String key, RestClient.Builder builder) {
         this.toDoRepo = toDoRepo;
-        restClient = RestClient.builder()
+        restClient = builder
                 .defaultHeader("Authorization", "Bearer " + key)
                 .baseUrl(baseUrl).build();
     }
 
+
     public String correctDescription(String description) {
-        String question = "Correct spelling and grammar mistakes: "+description;
+        String question = "Correct spelling and grammar mistakes: " + description;
         OpenAiRequest request = new OpenAiRequest("gpt-4o-mini",
-                List.of(new OpenAiMessage("user", question )),
+                List.of(new OpenAiMessage("user", question)),
                 0.2);
         OpenAiResponse response = restClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -53,6 +54,10 @@ public class ToDoService {
     }
 
     public ToDo editToDo(ToDo editedToDo) {
+        ToDo oldToDo = toDoRepo.findById(editedToDo.id()).orElseThrow();
+        if (oldToDo.description().equals(editedToDo.description())){
+         return toDoRepo.save(editedToDo);
+        }
         String correctedDescription = correctDescription(editedToDo.description());
         ToDo toDoWithCorrectedDescription = new ToDo(editedToDo.id(), correctedDescription, editedToDo.status());
         return toDoRepo.save(toDoWithCorrectedDescription);
