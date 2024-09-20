@@ -8,15 +8,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureMockRestServiceServer
+
 class ToDoControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -69,58 +72,64 @@ class ToDoControllerTest {
     }
 
 
-//    @Test
-//    @DirtiesContext
-//    void createToDo_clientTest() throws Exception {
-//
-//        mockMvc.perform(post("/api/todo")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("""
-//                                { "description":"buy birthday present", "status":"in progress"}
-//                                """))
-//                .andExpect(status().isOk())
-//                .andExpect(content().json("""
-//                                                       { "description":"buy birthday present", "status":"in progress"}
-//                        """)
-//                ).andExpect(jsonPath("$.id").isNotEmpty());
-//        ;
-//    }
 
 
-    // testen wir nur ob er irgendwas zurückschickt????
+
     @Test
     @DirtiesContext
     void createToDo_ApiTest() throws Exception {
-        mockRestServiceServer.expect(requestTo("https://api.openai.com/v1/chat/completions"))
+        mockRestServiceServer.expect(requestTo("http://localhost:8000"))
                 .andExpect(method(HttpMethod.POST))
-//                .andExpect(MockRestRequestMatchers.content().json("""
-//{
-//    "model": "gpt-4o-mini",
-//    "messages": [
-//        {
-//            "role": "user",
-//            "content": "Correct spelling and grammar mistakes: bouy birtday prasent"
-//        }
-//    ],
-//    "response_format": {
-//        "type": "json_object"
-//         }
-//   }
-//"""))
+                .andExpect(MockRestRequestMatchers.content().json("""
+                        {
+                            "model": "gpt-4o-mini",
+                            "messages": [
+                                {
+                                    "role": "user",
+                                    "content": "Correct spelling and grammar mistakes: bouy birtday prasent"
+                                }
+                            ],
+                            "temperature": 0.2
+                           }
+                        """))
                 .andRespond(withSuccess("""
                         {
-                          "choices": [{
-                        
-                            "message": {
-                              "role": "assistant",
-                              "content": "Buy birthday present"
-                            }
-                          }]
+                            "id": "chatcmpl-abc123",
+                            "object": "chat.completion",
+                            "created": 1677858242,
+                            "model": "gpt-4o-mini",
+                            "usage": {
+                                "prompt_tokens": 13,
+                                "completion_tokens": 7,
+                                "total_tokens": 20,
+                                "completion_tokens_details": {
+                                    "reasoning_tokens": 0
+                                }
+                            },
+                            "choices": [
+                                {
+                                    "message": {
+                                        "role": "assistant",
+                                        "content": "\\n\\nThis is a test!"
+                                    },
+                                    "logprobs": null,
+                                    "finish_reason": "stop",
+                                    "index": 0
+                                }
+                            ]
                         }
                         
                         """, MediaType.APPLICATION_JSON));
-
-
+        mockMvc.perform(post("/api/todo")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                { "description":"bouy birtday prasent", "status":"in progress"}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                                                       { "description":"\\n\\nThis is a test!", "status":"in progress"}
+                        """)
+                ).andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty());
     }
 
 

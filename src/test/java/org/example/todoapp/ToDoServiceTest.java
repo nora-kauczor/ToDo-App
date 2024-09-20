@@ -15,7 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ToDoServiceTest {
     private final ToDoRepo mockedRepo = mock(ToDoRepo.class);
-    private final ToDoService testService = new ToDoService(mockedRepo, null, null, null);
+    RestClient.Builder builder = RestClient.builder();
+    private final ToDoService testService = new ToDoService(mockedRepo, "XYZ", "123", builder);
+
 
     @Test
     void getAllToDos() {
@@ -35,7 +37,7 @@ class ToDoServiceTest {
         mockedRepo.save(testToDo);
         ToDo expected = testToDo;
         when(mockedRepo.findById(testToDo.id())).thenReturn(Optional.of(expected));
-       ToDo actual = testService.getToDo(testToDo.id());
+        ToDo actual = testService.getToDo(testToDo.id());
         assertEquals(expected, actual);
         verify(mockedRepo).findById(testToDo.id());
     }
@@ -50,8 +52,8 @@ class ToDoServiceTest {
         ToDo actual = testService.createToDo(testToDoDTO);
         verify(mockedRepo).save(testToDo);
         assertEquals(expected, actual);
-
     }
+
 
     @Test
     void editToDo() {

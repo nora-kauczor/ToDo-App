@@ -23,7 +23,6 @@ public class ToDoService {
                 .baseUrl(baseUrl).build();
     }
 
-
     public String correctDescription(String description) {
         String question = "Correct spelling and grammar mistakes: " + description;
         OpenAiRequest request = new OpenAiRequest("gpt-4o-mini",
@@ -64,6 +63,7 @@ public class ToDoService {
     }
 
     public String deleteToDo(String id) {
+        
         toDoRepo.deleteById(id);
         return "ToDo successfully deleted.";
     }
